@@ -62,7 +62,7 @@ public class AdminDao {
 
             boolean deleted = statement.execute();
             if (!deleted) {
-                throw new NotFoundException("Product not found");
+                throw new NotFoundException("Admin not found");
             }
         } catch (Exception e) {
             e.printStackTrace();
