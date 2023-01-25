@@ -3,6 +3,7 @@ package pl.coderslab.dao;
 import pl.coderslab.exception.NotFoundException;
 import pl.coderslab.model.Admin;
 import pl.coderslab.utils.DbUtil;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,9 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.System.err;
+import static pl.coderslab.utils.DbUtil.hashPassword;
+
 public class AdminDao {
 
-    private static final String CREATE_ADMIN_QUERY = "INSERT INTO admins(firstName,lastName,email,password) VALUES (?,?,?,?);";
+    private static final String CREATE_ADMIN_QUERY = "INSERT INTO admins(first_name,last_name,email,password) VALUES (?,?,?,?);";
 
     private static final String DELETE_ADMIN_QUERY = "DELETE FROM admins where id = ?;";
 
@@ -21,7 +25,8 @@ public class AdminDao {
 
     private static final String READ_ADMIN_QUERY = "SELECT * from admins where id = ?;";
 
-    private static final String UPDATE_ADMIN_QUERY = "UPDATE	admins SET firstName = ? , lastName = ?, email = ?, password = ? WHERE	id = ?;";
+    private static final String UPDATE_ADMIN_QUERY = "UPDATE	admins SET firs_name = ? , last_name = ?, email = ?, password = ? WHERE	id = ?;";
+    private static final String QUERY_LOGIN_ADMIN = "SELECT * FROM admins WHERE email = ? ";
 
     public Admin create(Admin admin) {
         try (Connection connection = DbUtil.getConnection();
@@ -30,7 +35,7 @@ public class AdminDao {
             insertStm.setString(1, admin.getFirstName());
             insertStm.setString(2, admin.getLastName());
             insertStm.setString(3, admin.getEmail());
-            insertStm.setString(4, admin.getPassword());
+            insertStm.setString(4, hashPassword(admin.getPassword()));
             insertStm.setInt(5, admin.getSuperAdmin());
             insertStm.setInt(6, admin.getEnable());
             int result = insertStm.executeUpdate();
@@ -53,6 +58,7 @@ public class AdminDao {
         }
         return null;
     }
+
 
     public void delete(Integer adminId) {
         try (Connection connection = DbUtil.getConnection();
@@ -136,4 +142,31 @@ public class AdminDao {
 
     }
 
+    public Admin readLoginAdmin(String email, String password){
+        Admin admin = null;
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(QUERY_LOGIN_ADMIN)
+        ) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                
+                while (resultSet.next()) {
+                    String passwordBD = resultSet.getString("password");
+                    if(BCrypt.checkpw(password, passwordBD)) {
+                        admin = new Admin();
+                        admin.setId(resultSet.getInt("id"));
+                        admin.setFirstName(resultSet.getString("firstName"));
+                        admin.setLastName(resultSet.getString("lastName"));
+                        admin.setEmail(resultSet.getString("email"));
+                        admin.setPassword(passwordBD);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return admin;
+    }
 }

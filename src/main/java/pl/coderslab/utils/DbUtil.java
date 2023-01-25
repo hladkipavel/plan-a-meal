@@ -1,5 +1,7 @@
 package pl.coderslab.utils;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -24,5 +26,8 @@ public class DbUtil {
             }
         }
         return dataSource;
+    }
+    public static String hashPassword(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }
