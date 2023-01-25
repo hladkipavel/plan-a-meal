@@ -22,8 +22,7 @@ public class LoginServlet extends HttpServlet {
         AdminDao adminDao = new AdminDao();
         String mail = req.getParameter("mail");
         String password = req.getParameter("password");
-        Admin admin = new Admin();
-//        Admin admin = adminDao.read(mail, password);
+        Admin admin = adminDao.readLoginAdmin(mail, password);
         if(admin.getId() != 0){
             resp.sendRedirect("/home");
         }else {
@@ -31,3 +30,4 @@ public class LoginServlet extends HttpServlet {
         }
     }
 }
+
