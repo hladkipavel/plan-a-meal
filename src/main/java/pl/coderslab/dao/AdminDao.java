@@ -145,18 +145,17 @@ public class AdminDao {
     public Admin readLoginAdmin(String email, String password){
         Admin admin = null;
         try (Connection connection = DbUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(QUERY_LOGIN_ADMIN)
-        ) {
+             PreparedStatement statement = connection.prepareStatement(QUERY_LOGIN_ADMIN)){
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
-                
                 while (resultSet.next()) {
                     String passwordBD = resultSet.getString("password");
-                    if(BCrypt.checkpw(password, passwordBD)) {
+                    System.out.println(BCrypt.checkpw(password, hashPassword(password)));
+                    if(BCrypt.checkpw(password, hashPassword(password))) {
                         admin = new Admin();
-                        admin.setId(resultSet.getInt("id"));
-                        admin.setFirstName(resultSet.getString("firstName"));
-                        admin.setLastName(resultSet.getString("lastName"));
+                        admin.setId(Integer.parseInt(resultSet.getString("id")));
+                        admin.setFirstName(resultSet.getString("first_name"));
+                        admin.setLastName(resultSet.getString("last_name"));
                         admin.setEmail(resultSet.getString("email"));
                         admin.setPassword(passwordBD);
                     }
