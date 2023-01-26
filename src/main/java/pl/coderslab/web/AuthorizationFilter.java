@@ -12,11 +12,9 @@ import java.io.IOException;
 
 @WebFilter("/app/*")
 public class AuthorizationFilter implements Filter {
-    private FilterConfig filterConfig;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.filterConfig = filterConfig;
     }
 
     @Override
@@ -24,16 +22,13 @@ public class AuthorizationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpSession session = req.getSession();
-        String loginURL = req.getContextPath() + "/login";
         if (session != null && session.getAttribute("admin") != null) {
-            chain.doFilter(request, response);
+           chain.doFilter(request,response);
         }else {
-            resp.sendRedirect(loginURL);
+            resp.sendRedirect("/login");
         }
     }
-
     @Override
     public void destroy() {
-        this.filterConfig = null;
     }
 }
