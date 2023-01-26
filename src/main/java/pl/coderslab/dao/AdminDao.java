@@ -150,7 +150,6 @@ public class AdminDao {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     String passwordBD = resultSet.getString("password");
-                    System.out.println(BCrypt.checkpw(password, hashPassword(password)));
                     if(BCrypt.checkpw(password, hashPassword(password))) {
                         admin = new Admin();
                         admin.setId(Integer.parseInt(resultSet.getString("id")));
