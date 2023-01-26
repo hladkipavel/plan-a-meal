@@ -36,8 +36,8 @@ public class AdminDao {
             insertStm.setString(2, admin.getLastName());
             insertStm.setString(3, admin.getEmail());
             insertStm.setString(4, hashPassword(admin.getPassword()));
-            insertStm.setInt(5, admin.getSuperAdmin());
-            insertStm.setInt(6, admin.getEnable());
+//            insertStm.setInt(5, admin.getSuperAdmin());
+//            insertStm.setInt(6, admin.getEnable());
             int result = insertStm.executeUpdate();
 
             if (result != 1) {

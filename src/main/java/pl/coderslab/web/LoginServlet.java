@@ -5,9 +5,7 @@ import pl.coderslab.model.Admin;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/login")
@@ -19,14 +17,38 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        AdminDao adminDao = new AdminDao();
-        String mail = req.getParameter("mail");
+///        AdminDao adminDao = new AdminDao();
+//        String email = req.getParameter("email");
+//        String password = req.getParameter("password");
+////        Admin admin = adminDao.readLoginAdmin(email, password);
+//        HttpSession session = req.getSession();
+//        if (session != null && email != null && password != null) {
+//            req.getRequestDispatcher("/login.jsp").forward(req, resp);
+//        } else {
+//            AdminDao adminDao = new AdminDao();
+//            Admin admin = adminDao.readLoginAdmin(email, password);
+//            if(admin == null){
+//                httpRequest.getRequestDispatcher("/login.jsp").forward(httpRequest, httpResponse);
+//            }else {
+//                httpRequest.getRequestDispatcher("/app/dashboard").forward(httpRequest, httpResponse);
+//            }
+//        }
+//        if(admin != null){
+//            Cookie cookie = new Cookie("email", email);
+//            getServletContext().getRequestDispatcher("/app/dashboard").forward(req, resp);
+//        }else {
+//            getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+//        }
+        HttpSession session = req.getSession();
+        String email = req.getParameter("email");
         String password = req.getParameter("password");
-        Admin admin = adminDao.readLoginAdmin(mail, password);
-        if(admin.getId() != 0){
-            resp.sendRedirect("/home");
-        }else {
-            getServletContext().getRequestDispatcher("/home.jsp").forward(req,resp);
+        AdminDao adminDao = new AdminDao();
+        Admin admin = adminDao.readLoginAdmin(email, password);
+        if(admin == null){
+            getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+        }else{
+            session.setAttribute("admin", admin);
+            getServletContext().getRequestDispatcher("/app/dashboard").forward(req,resp);
         }
     }
 }

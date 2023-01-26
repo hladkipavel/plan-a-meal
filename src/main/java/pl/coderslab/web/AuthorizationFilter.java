@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-@WebFilter("/login")
+
+@WebFilter("/app/*")
 public class AuthorizationFilter implements Filter {
     private FilterConfig filterConfig;
 
@@ -20,21 +21,14 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        HttpSession session = httpRequest.getSession();
-        if (session != null && email != null && password != null) {
-            httpRequest.getRequestDispatcher("/login.jsp").forward(httpRequest, httpResponse);
-        } else {
-            AdminDao adminDao = new AdminDao();
-            Admin admin = adminDao.readLoginAdmin(email, password);
-            if(admin == null){
-                httpRequest.getRequestDispatcher("/login.jsp").forward(httpRequest, httpResponse);
-            }else {
-                httpRequest.getRequestDispatcher("/dashboard.jsp").forward(httpRequest, httpResponse);
-            }
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        HttpSession session = req.getSession();
+        String loginURL = req.getContextPath() + "/login";
+        if (session != null && session.getAttribute("admin") != null) {
+            chain.doFilter(request, response);
+        }else {
+            resp.sendRedirect(loginURL);
         }
     }
 

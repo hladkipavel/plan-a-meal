@@ -26,6 +26,7 @@ public class RegistrationServlet extends HttpServlet {
         admin.setPassword(req.getParameter("password"));
         AdminDao adminDao = new AdminDao();
         adminDao.create(admin);
-        resp.sendRedirect("/login");
+        getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+
     }
 }
