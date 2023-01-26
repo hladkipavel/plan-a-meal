@@ -11,12 +11,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.*;
+
 public class PlanDao {
     private static final String CREATE_PLAN_QUERY = "INSERT INTO plan(name,description,created) VALUES (?,?,?);";
     private static final String DELETE_PLAN_QUERY = "DELETE FROM plan where id = ?;";
     private static final String FIND_ALL_PLANS_QUERY = "SELECT * FROM plan;";
     private static final String READ_PLAN_QUERY = "SELECT * from plan where id = ?;";
     private static final String UPDATE_PLAN_QUERY = "UPDATE	plan SET name = ? , description = ?, created = ? WHERE	id = ?;";
+    private static final String COUNT_PLANS_FOR_ADMIN = "SELECT count(plan.id) count FROM plan WHERE admin_id = ?;";
 
     public Plan read(Integer planId) {
         Plan plan = new Plan();
@@ -108,6 +111,22 @@ public class PlanDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String countPlansForAdmin(Integer id){
+        String count = null;
+        try (Connection connection = DbUtil.getConnection();
+        PreparedStatement statement = connection.prepareStatement(COUNT_PLANS_FOR_ADMIN)){
+            statement.setString(1, Integer.toString(id));
+            try(ResultSet resultSet = statement.executeQuery()){
+                while (resultSet.next()){
+                    count = resultSet.getString("count");
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return count;
     }
 }
 
