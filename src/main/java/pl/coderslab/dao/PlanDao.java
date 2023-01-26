@@ -28,6 +28,7 @@ public class PlanDao {
             "         JOIN recipe on recipe.id=recipe_id WHERE\n" +
             "        recipe_plan.plan_id =  (SELECT MAX(id) from plan WHERE admin_id = ?)\n" +
             "ORDER by day_name.display_order, recipe_plan.display_order;";
+    private static final String PLAN_NAME = "SELECT plan.name FROM plan WHERE plan.id = (SELECT MAX(id) from plan WHERE admin_id = ?);";
     public Plan read(Integer planId) {
         Plan plan = new Plan();
         try (Connection connection = DbUtil.getConnection();
@@ -121,32 +122,34 @@ public class PlanDao {
     }
 
     public String countPlansForAdmin(Integer id){
-        String count = null;
+        String countPlans = null;
         try (Connection connection = DbUtil.getConnection();
         PreparedStatement statement = connection.prepareStatement(COUNT_PLANS_FOR_ADMIN)){
             statement.setString(1, Integer.toString(id));
             try(ResultSet resultSet = statement.executeQuery()){
                 while (resultSet.next()){
-                    count = resultSet.getString("count");
+                    countPlans = resultSet.getString("count");
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return count;
+        return countPlans;
     }
 
-    public static LatestPlan getLatestPlanForAdmin(Integer id) {
-        LatestPlan latestPlan = new LatestPlan();
+    public static List<LatestPlan> getLatestPlanForAdmin(Integer id) {
+        List<LatestPlan> latestPlanInfo = new ArrayList<>();
         try (Connection connection = DbUtil.getConnection();
         PreparedStatement statement = connection.prepareStatement(GET_LATEST_PLAN_FOR_ADMIN)){
             statement.setString(1, Integer.toString(id));
-            try(ResultSet resultSet = statement.getResultSet()){
+            try(ResultSet resultSet = statement.executeQuery()){
                 while (resultSet.next()){
+                    LatestPlan latestPlan = new LatestPlan();
                     latestPlan.setDayName(resultSet.getString("day_name"));
                     latestPlan.setDayName(resultSet.getString("meal_name"));
                     latestPlan.setDayName(resultSet.getString("recipe_name"));
                     latestPlan.setDayName(resultSet.getString("recipe_description"));
+                    latestPlanInfo.add(latestPlan);
                 }
             }catch (NullPointerException e){
                 e.printStackTrace();
@@ -154,7 +157,22 @@ public class PlanDao {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return latestPlan;
+        return latestPlanInfo;
+    }
+
+    public String getPlanName(Integer id){
+        String planName = null;
+        try(Connection connection = DbUtil.getConnection();
+        PreparedStatement statement = connection.prepareStatement(PLAN_NAME)){
+            statement.setString(1, Integer.toString(id));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                planName = resultSet.getString("name");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return planName;
     }
 }
 

@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
             getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
         }else{
             session.setAttribute("admin", admin);
-            getServletContext().getRequestDispatcher("/app/dashboard").forward(req,resp);
+            resp.sendRedirect("/app/dashboard");
         }
     }
 }
