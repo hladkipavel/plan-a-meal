@@ -1,6 +1,7 @@
 package pl.coderslab.dao;
 
 import pl.coderslab.exception.NotFoundException;
+import pl.coderslab.model.LatestPlan;
 import pl.coderslab.model.Plan;
 import pl.coderslab.utils.DbUtil;
 
@@ -20,7 +21,13 @@ public class PlanDao {
     private static final String READ_PLAN_QUERY = "SELECT * from plan where id = ?;";
     private static final String UPDATE_PLAN_QUERY = "UPDATE	plan SET name = ? , description = ?, created = ? WHERE	id = ?;";
     private static final String COUNT_PLANS_FOR_ADMIN = "SELECT count(plan.id) count FROM plan WHERE admin_id = ?;";
-
+    private static final String GET_LATEST_PLAN_FOR_ADMIN =
+            "SELECT day_name.name as day_name, meal_name,  recipe.name as recipe_name, recipe.description as recipe_description\n" +
+            "FROM `recipe_plan`\n" +
+            "         JOIN day_name on day_name.id=day_name_id\n" +
+            "         JOIN recipe on recipe.id=recipe_id WHERE\n" +
+            "        recipe_plan.plan_id =  (SELECT MAX(id) from plan WHERE admin_id = ?)\n" +
+            "ORDER by day_name.display_order, recipe_plan.display_order;";
     public Plan read(Integer planId) {
         Plan plan = new Plan();
         try (Connection connection = DbUtil.getConnection();
@@ -127,6 +134,27 @@ public class PlanDao {
             e.printStackTrace();
         }
         return count;
+    }
+
+    public static LatestPlan getLatestPlanForAdmin(Integer id) {
+        LatestPlan latestPlan = new LatestPlan();
+        try (Connection connection = DbUtil.getConnection();
+        PreparedStatement statement = connection.prepareStatement(GET_LATEST_PLAN_FOR_ADMIN)){
+            statement.setString(1, Integer.toString(id));
+            try(ResultSet resultSet = statement.getResultSet()){
+                while (resultSet.next()){
+                    latestPlan.setDayName(resultSet.getString("day_name"));
+                    latestPlan.setDayName(resultSet.getString("meal_name"));
+                    latestPlan.setDayName(resultSet.getString("recipe_name"));
+                    latestPlan.setDayName(resultSet.getString("recipe_description"));
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return latestPlan;
     }
 }
 
