@@ -27,14 +27,13 @@ public class DashboardServlet extends HttpServlet {
         Integer id = admin.getId();
         String countPlans = planDao.countPlansForAdmin(id);
         String countRecipe = recipeDao.countRecipeForAdmin(id);
-        String planName = planDao.getPlanName(id);
         req.setAttribute("name", admin.getFirstName());
         req.setAttribute("countPlans", countPlans);
         req.setAttribute("countRecipe", countRecipe);
+        String planName = planDao.getPlanName(id);
         req.setAttribute("planName", planName);
         List<LatestPlan> latestPlans = planDao.getLatestPlanForAdmin(id);
-        for(LatestPlan plan : latestPlans){
-        }
+        req.setAttribute("latestPlans", latestPlans);
         getServletContext().getRequestDispatcher("/app/dashboard.jsp").forward(req, resp);
     }
 }
