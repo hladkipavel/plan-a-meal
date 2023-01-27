@@ -82,9 +82,9 @@ public class RecipeDao {
             insertStm.setString(3, recipe.getDescription());
             insertStm.setString(4, recipe.getCreated());
             insertStm.setString(5, recipe.getUpdated());
-            insertStm.setInt(6, recipe.getPreparationTime());
+            insertStm.setString(6, String.valueOf(recipe.getPreparationTime()));
             insertStm.setString(7, recipe.getPreparation());
-            insertStm.setInt(8, recipe.getAdminId());
+            insertStm.setString(8, Integer.toString(recipe.getAdminId()));
             int result = insertStm.executeUpdate();
 
             if (result != 1) {
