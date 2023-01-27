@@ -5,8 +5,8 @@
   Time: 14:38
   To change this template use File | Settings | File Templates.
 --%>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:include page="loginHeader.jsp"></jsp:include>
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
@@ -75,7 +75,8 @@
                 <div class="dashboard-alerts">
                     <div class="alert-item alert-info">
                         <i class="fas icon-circle fa-info-circle"></i>
-                        <span class="font-weight-bold">Liczba przepisów: <c:out value="${countRecipe}" default="0"/></span>
+                        <span class="font-weight-bold">Liczba przepisów: <c:out value="${countRecipe}"
+                                                                                default="0"/></span>
                     </div>
                     <div class="alert-item alert-light">
                         <i class="far icon-calendar fa-calendar-alt"></i>
@@ -88,55 +89,27 @@
                     <span>Ostatnio dodany plan:</span> <c:out value="${planName}"/>
                 </h2>
                 <table class="table">
+                    <c:set var="day" scope="session" value="0"/>
+                    <c:forEach items="${latestPlans}" var="plan">
+                    <c:if test="${plan.dayName!=day}">
+                    <c:set var="day" scope="session" value="${plan.dayName}"/>
                     <thead>
                     <tr class="d-flex">
-                        <th class="col-2">Poniedziałek</th>
+                        <th class="col-2">${day}</th>
                         <th class="col-8"></th>
                         <th class="col-2"></th>
                     </tr>
                     </thead>
                     <tbody>
+                    </c:if>
                     <tr class="d-flex">
-                        <td class="col-2">śniadanie</td>
-                        <td class="col-8">płatki owsiane z jagodami i komosą ryżową</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
+                        <td class="col-2">${plan.mealName}</td>
+                        <td class="col-8">${plan.recipeName}</td>
+                        <td class="col-2">
+                            <button type="button" class="btn btn-primary rounded-0">Szczegóły</button>
+                        </td>
                     </tr>
-                    <tr class="d-flex">
-                        <td class="col-2">śniadanie</td>
-                        <td class="col-8">kanapka z pastą rybną</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                    </tr>
-                    <tr class="d-flex">
-                        <td class="col-2">obiad</td>
-                        <td class="col-8">zupa pomidorowa</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table class="table">
-                    <thead>
-                    <tr class="d-flex">
-                        <th class="col-2">Wtorek</th>
-                        <th class="col-8"></th>
-                        <th class="col-2"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="d-flex">
-                        <td class="col-2">śniadanie</td>
-                        <td class="col-8">płatki owsiane z jagodami i komosą ryżową</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                    </tr>
-                    <tr class="d-flex">
-                        <td class="col-2">drugie śniadanie</td>
-                        <td class="col-8">pączki</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                    </tr>
-                    <tr class="d-flex">
-                        <td class="col-2">obiad</td>
-                        <td class="col-8">schabowy w panierce</td>
-                        <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                    </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
