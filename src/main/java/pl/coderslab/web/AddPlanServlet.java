@@ -34,6 +34,6 @@ public class AddPlanServlet extends HttpServlet {
         plan.setAdminId(admin.getId());
         PlanDao planDao = new PlanDao();
         planDao.create(plan);
-        getServletContext().getRequestDispatcher("/app/plan/list").forward(req, resp);
+        getServletContext().getRequestDispatcher("/app/dashboard").forward(req, resp);
     }
 }
