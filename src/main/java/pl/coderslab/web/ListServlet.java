@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/app/recipe/list/")
-public class RecipesServlet extends HttpServlet {
+@WebServlet("/app/recipe/list")
+public class ListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/recipes.jsp").forward(req,resp);
+        getServletContext().getRequestDispatcher("/app/recipe/list.jsp").forward(req,resp);
     }
 }
