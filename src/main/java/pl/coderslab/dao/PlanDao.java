@@ -17,7 +17,7 @@ import static java.lang.String.*;
 public class PlanDao {
     private static final String CREATE_PLAN_QUERY = "INSERT INTO plan(name,description,created) VALUES (?,?,?);";
     private static final String DELETE_PLAN_QUERY = "DELETE FROM plan where id = ?;";
-    private static final String FIND_ALL_PLANS_QUERY = "SELECT * FROM plan;";
+    private static final String FIND_ALL_PLANS_QUERY = "SELECT * FROM plan WHERE admin_id = ?;";
     private static final String READ_PLAN_QUERY = "SELECT * from plan where id = ?;";
     private static final String UPDATE_PLAN_QUERY = "UPDATE	plan SET name = ? , description = ?, created = ? WHERE	id = ?;";
     private static final String COUNT_PLANS_FOR_ADMIN = "SELECT count(plan.id) count FROM plan WHERE admin_id = ?;";
@@ -50,12 +50,12 @@ public class PlanDao {
         return plan;
     }
 
-    public List<Plan> findAll() {
+    public List<Plan> findAll(Integer id) {
         List<Plan> planList = new ArrayList<>();
         try (Connection connection = DbUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_PLANS_QUERY);
-             ResultSet resultSet = statement.executeQuery()) {
-
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_PLANS_QUERY)) {
+            statement.setString(1, Integer.toString(id));
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Plan planToAdd = new Plan();
                 planToAdd.setId(resultSet.getInt("id"));
@@ -153,7 +153,7 @@ public class PlanDao {
                     latestPlanInfo.add(latestPlan);
                     System.out.println(latestPlanInfo);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (Exception e) {
@@ -161,16 +161,17 @@ public class PlanDao {
         }
         return latestPlanInfo;
     }
-    public String getPlanName(Integer id){
+
+    public String getPlanName(Integer id) {
         String planName = null;
-        try(Connection connection = DbUtil.getConnection();
-            PreparedStatement statement = connection.prepareStatement(PLAN_NAME)){
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(PLAN_NAME)) {
             statement.setString(1, Integer.toString(id));
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 planName = resultSet.getString("name");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return planName;
