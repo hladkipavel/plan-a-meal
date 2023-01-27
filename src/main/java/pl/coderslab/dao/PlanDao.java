@@ -28,8 +28,11 @@ public class PlanDao {
             "        recipe_plan.plan_id = (SELECT MAX(id) from plan WHERE admin_id = ?)\n" +
             "ORDER by day_name.display_order, recipe_plan.display_order;";
     private static final String PLAN_NAME = "SELECT plan.name FROM plan WHERE plan.id = (SELECT MAX(id) from plan WHERE admin_id = ?);";
-    private static final String DAY_OF_WEEK = "SELECT * FROM day_name ;";
-
+    private static final String GET_DETAILS_FOR_PLAN ="SELECT day_name.name as day_name, meal_name, recipe.name as recipe_name, recipe.description as recipe_description\n" +
+            "FROM `recipe_plan`\n" +
+            "         JOIN day_name on day_name.id=day_name_id\n" +
+            "         JOIN recipe on recipe.id=recipe_id WHERE plan_id = ?\n" +
+            "ORDER by day_name.display_order, recipe_plan.display_order;";
     public Plan read(Integer planId) {
         Plan plan = new Plan();
         try (Connection connection = DbUtil.getConnection();
@@ -176,6 +179,28 @@ public class PlanDao {
             e.printStackTrace();
         }
         return planName;
+    }
+    public static List<LatestPlan> getDetailsForPlan(Integer id) {
+        List<LatestPlan> detailsForPlan = new ArrayList<>();
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_DETAILS_FOR_PLAN)) {
+            statement.setString(1, Integer.toString(id));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    LatestPlan detailsPlan = new LatestPlan();
+                    detailsPlan.setDayName(resultSet.getString("day_name"));
+                    detailsPlan.setMealName(resultSet.getString("meal_name"));
+                    detailsPlan.setRecipeName(resultSet.getString("recipe_name"));
+                    detailsPlan.setRecipeDescription(resultSet.getString("recipe_description"));
+                    detailsForPlan.add(detailsPlan);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return detailsForPlan;
     }
 }
 

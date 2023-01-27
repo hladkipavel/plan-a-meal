@@ -18,7 +18,7 @@
                         </a>
                     </div>
                     <div class="menu-item border-dashed">
-                        <a href="/app/addPlan.jsp">
+                        <a href="/app/plan/add">
                             <i class="far fa-plus-square icon-plus-square"></i>
                             <span class="title">dodaj plan</span>
                         </a>
@@ -58,8 +58,8 @@
                         <th class="col-2"></th>
                     </tr>
                     </thead>
-                    <tbody>
                     </c:if>
+                    <tbody>
                     <tr class="d-flex">
                         <td class="col-2">${plan.mealName}</td>
                         <td class="col-8">${plan.recipeName}</td>
