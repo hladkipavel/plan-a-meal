@@ -13,16 +13,16 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/app/recipe/list")
-public class ListServlet extends HttpServlet {
+@WebServlet("/app/recipe/details")
+public class DetailsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RecipeDao recipeDao = new RecipeDao();
         HttpSession session = req.getSession();
-        Admin admin = (Admin) session.getAttribute("admin");
-        List<Recipe> recipeList = recipeDao.findAll(admin.getId());
-        req.setAttribute("recipeList", recipeList);
+        int id = Integer.parseInt(req.getParameter("id"));
+        Recipe recipe = recipeDao.read(id);
+        req.setAttribute("recipe", recipe);
 
-        getServletContext().getRequestDispatcher("/app/list.jsp").forward(req,resp);
+        getServletContext().getRequestDispatcher("/app/details.jsp").forward(req,resp);
     }
 }
