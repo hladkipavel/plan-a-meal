@@ -15,7 +15,7 @@ import java.util.List;
 public class RecipeDao {
     private static final String CREATE_RECIPE_QUERY = "INSERT INTO recipe(name,ingredients,description,created,updated,preparation_time,preparation,admin_id ) VALUES (?,?,?,?,?,?,?,?);";
     private static final String DELETE_RECIPE_QUERY = "DELETE FROM recipe where id = ?;";
-    private static final String FIND_ALL_RECIPE_QUERY = "SELECT * FROM recipe;";
+    private static final String FIND_ALL_RECIPE_QUERY = "SELECT * FROM recipe WHERE admin_id = ?;";
     private static final String READ_RECIPE_QUERY = "SELECT * from recipe where id = ?;";
     private static final String UPDATE_RECIPE_QUERY = "UPDATE	recipe SET name = ? , ingredients = ?, description = ?, created = ?, updated = ?, preparation_time = ?, preparation = ? WHERE	id = ?;";
     private static final String COUNT_RECIPE_FOR_ADMIN = "SELECT count(recipe.id) count FROM recipe WHERE admin_id = ?;";
@@ -46,12 +46,12 @@ public class RecipeDao {
 
     }
 
-    public List<Recipe> findAll() {
+    public List<Recipe> findAll(Integer id) {
         List<Recipe> recipeList = new ArrayList<>();
         try (Connection connection = DbUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_RECIPE_QUERY);
-             ResultSet resultSet = statement.executeQuery()) {
-
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_RECIPE_QUERY)){
+            statement.setString(1, Integer.toString(id));
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Recipe recipeToAdd = new Recipe();
                 recipeToAdd.setId(resultSet.getInt("id"));
