@@ -15,7 +15,7 @@ import java.util.List;
 import static java.lang.String.*;
 
 public class PlanDao {
-    private static final String CREATE_PLAN_QUERY = "INSERT INTO plan(name,description,created) VALUES (?,?,?);";
+    private static final String CREATE_PLAN_QUERY = "INSERT INTO plan(name,description,created,admin_id) VALUES (?,?,?,?);";
     private static final String DELETE_PLAN_QUERY = "DELETE FROM plan where id = ?;";
     private static final String FIND_ALL_PLANS_QUERY = "SELECT * FROM plan;";
     private static final String READ_PLAN_QUERY = "SELECT * from plan where id = ?;";
@@ -91,6 +91,7 @@ public class PlanDao {
             insStatement.setString(1, plan.getName());
             insStatement.setString(2, plan.getDescription());
             insStatement.setString(3, plan.getCreated());
+            insStatement.setString(4, Integer.toString(plan.getAdminId()));
             int result = insStatement.executeUpdate();
             if (result != 1) {
                 throw new RuntimeException("Execute update returned " + result);

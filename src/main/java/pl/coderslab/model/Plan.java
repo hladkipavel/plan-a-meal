@@ -10,10 +10,13 @@ public class Plan {
     private String description;
     private String created;
 
-    public Plan(String name, String description, String created) {
+    private int adminId;
+
+    public Plan(String name, String description, String created, int adminId) {
         this.name = name;
         this.description = description;
         this.created = created;
+        this.adminId = adminId;
     }
 
     public Plan() {
@@ -54,5 +57,12 @@ public class Plan {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public int getAdminId() {
+        return adminId;
+    }
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
     }
 }
