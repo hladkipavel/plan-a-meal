@@ -43,6 +43,6 @@ public class AddRecipe extends HttpServlet {
         recipe.setAdminId(admin.getId());
         recipeDao.create(recipe);
 
-        resp.sendRedirect("/app/dashboard");
+        resp.sendRedirect("/app/recipe/list");
     }
 }
