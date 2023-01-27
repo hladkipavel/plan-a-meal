@@ -30,9 +30,9 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("name", admin.getFirstName());
         req.setAttribute("countPlans", countPlans);
         req.setAttribute("countRecipe", countRecipe);
+        String planName = planDao.getPlanName(id);
+        req.setAttribute("planName", planName);
         List<LatestPlan> latestPlans = planDao.getLatestPlanForAdmin(id);
-        List<String> dayOfWeek = planDao.getDayOfWeek();
-        req.setAttribute("dayOfWeek", dayOfWeek);
         req.setAttribute("latestPlans", latestPlans);
         getServletContext().getRequestDispatcher("/app/dashboard.jsp").forward(req, resp);
     }

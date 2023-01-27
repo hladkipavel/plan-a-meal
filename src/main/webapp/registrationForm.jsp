@@ -29,7 +29,7 @@
                         <input type="password" class="form-control" id="password" name="password" placeholder="podaj hasło">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="repassword" name="password" placeholder="powtórz hasło">
+                        <input type="password" class="form-control" id="repassword" name="repassword" placeholder="powtórz hasło">
                     </div>
                     <button class="btn btn-color rounded-0" type="submit">Zarejestruj</button>
                 </form>

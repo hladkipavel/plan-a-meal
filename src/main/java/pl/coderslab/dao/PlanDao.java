@@ -143,13 +143,13 @@ public class PlanDao {
         try (Connection connection = DbUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(GET_LATEST_PLAN_FOR_ADMIN)) {
             statement.setString(1, Integer.toString(id));
-            try (ResultSet resultSet2 = statement.executeQuery()) {
-                while (resultSet2.next()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
                     LatestPlan latestPlan = new LatestPlan();
-                    latestPlan.setDayName(resultSet2.getString("day_name"));
-                    latestPlan.setMealName(resultSet2.getString("meal_name"));
-                    latestPlan.setRecipeName(resultSet2.getString("recipe_name"));
-                    latestPlan.setRecipeDescription(resultSet2.getString("recipe_description"));
+                    latestPlan.setDayName(resultSet.getString("day_name"));
+                    latestPlan.setMealName(resultSet.getString("meal_name"));
+                    latestPlan.setRecipeName(resultSet.getString("recipe_name"));
+                    latestPlan.setRecipeDescription(resultSet.getString("recipe_description"));
                     latestPlanInfo.add(latestPlan);
                     System.out.println(latestPlanInfo);
                 }
@@ -161,18 +161,19 @@ public class PlanDao {
         }
         return latestPlanInfo;
     }
-    public List<String> getDayOfWeek() {
-        List<String> dayOfWeek = new ArrayList<>();
-        try (Connection connection = DbUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DAY_OF_WEEK);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                dayOfWeek.add(resultSet.getString("name"));
+    public String getPlanName(Integer id){
+        String planName = null;
+        try(Connection connection = DbUtil.getConnection();
+            PreparedStatement statement = connection.prepareStatement(PLAN_NAME)){
+            statement.setString(1, Integer.toString(id));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                planName = resultSet.getString("name");
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return dayOfWeek;
+        return planName;
     }
 }
 
